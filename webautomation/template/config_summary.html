@@ -1,0 +1,44 @@
+        {% extends 'base.html' %}
+
+        {% block breadcrumb %}
+        <a href="{% url "confighome" %}">Summary</a>
+        {% endblock%}
+        {% block dashboard %}
+
+         
+          {% endblock %}
+
+          {% block summary %}
+          <h2 class="sub-header">{{ title_summary }}</h2>
+          <div class="table-responsive">
+          <form action="{% url "testing" %}" method="post">
+          {% csrf_token %}
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Project</th>
+                  <th>Test Type</th>
+                  <th>Config Numbers</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for obj in objects %}
+                <tr>
+                  <td><input type="radio" name="choice" value="{{ obj.test_type }}"></td>
+                  <td>{{ obj.project }}</td>
+                  <td>{{ obj.test_type }}</td>
+                  <td>{{ obj.configs }}</td>
+                  <td><a href="{% url 'configtasks' ssid=obj.csid %}">View Details</a></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            <button type="submit" class="btn btn-primary" value="launch">Launch Testing</button>
+            </form>
+          </div>
+          {% endblock %}
+          {% block pagination %}
+          {{ block.super }}
+          {% endblock %}

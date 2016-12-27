@@ -1,0 +1,51 @@
+        {% extends 'config_summary.html' %}
+        {% block breadcrumb %}
+        {{ block.super }} / <a href="{% url "configtasks" ssid=ssid %}">Details</a>
+        {% endblock %}
+        {% block dashboard %}
+        {% endblock %}
+          {% block summary %}
+          <h2 class="sub-header">{{ title_tasks }}</h2>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <!--th>TASK ID</th-->
+                  <th>Config ID</th>
+                  <th>Config Type</th>
+                  <th>Container Name</th>
+                  <th>Container Alias</th>
+                  <th>Links</th>
+                  <th>Ports</th>
+                  <th>Demo</th>
+                  <th>JDK</th>
+                  <th>Middleware</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for obj in objects %}
+                <tr>
+                  {% if obj.config_type == "Java Agent" %}
+                  <td ROWSPAN=2 valign="middle">{{ obj.config_id }}</td>
+                  {% endif %}
+                  <td>{{ obj.config_type }}</td>
+                  <td>{{ obj.container_name }}</td>
+                  <td>{{ obj.container_alias }}</td>
+                  <td>{{obj.links}}</td>
+                  <td>{{obj.ports}}</td>
+                  {% if obj.config_type == "Java Agent" %}
+                  <td ROWSPAN=2>{{obj.demo}}</td>
+                  <td ROWSPAN=2>{{obj.jdk}}</td>
+                  <td ROWSPAN=2>{{obj.middleware}}</td>
+                  {% endif %}
+                  <td>{{obj.config_desc}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% endblock %}
+          {% block pagination %}
+          {{ block.super }}
+          {% endblock %}

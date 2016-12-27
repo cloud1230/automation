@@ -1,4 +1,4 @@
-"""webautomation URL Configuration
+"""mysite URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.9/topics/http/urls/
@@ -14,9 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
-from django.contrib import admin
+from . import views
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^reporting/', include('reporting.urls')),
+    #url(r'^admin/', admin.site.urls),
+    url(r'^$', views.home, name='home'),
+    url(r'^(?P<ssid>\d+)/$',views.tasks, name="tasks"),
+    url(r'^(?P<ssid>\d+)/(?P<sssid>\d+)/$',views.task_detail, name="detail"),
 ]

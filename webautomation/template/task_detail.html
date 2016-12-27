@@ -1,0 +1,35 @@
+        {% extends 'tasks.html' %}
+        {% block breadcrumb %}
+        {{ block.super }} / <a href="{% url "detail" ssid=ssid  sssid=sssid %}">Details</a>
+        {% endblock %}
+
+          {% block summary %}
+          <h2 class="sub-header">{{ title_detail }}</h2>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Log Type</th>
+                  <th>Content</th>
+                  <th>Snapshot</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for obj in objects %}
+                {% if obj.message_type == "FAIL" %}
+                <tr bgcolor="red">
+                {% else %}
+                <tr>
+                {% endif %}
+                  <td>{{ obj.message_type }}</td>
+                  <td>{{ obj.message_content }}</td>
+                  <td><a href = "{{ obj.file_path }}">{{ obj.file_path }}</a></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% endblock %}
+          {% block pagination %}
+          {{ block.super }}
+          {% endblock %}

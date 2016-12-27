@@ -1,0 +1,144 @@
+        {% extends 'base.html' %}
+
+        {% block breadcrumb %}
+        <a href="{% url "home" %}">Summary</a>
+        {% endblock%}
+        {% block dashboard %}
+
+
+          <h1 class="page-header">Dashboard</h1>
+
+          <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-comments fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">26</div>
+                                    <div>New Comments!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                            <div class="panel-footer">
+                                <span class="pull-left">View Details</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-green">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-tasks fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">12</div>
+                                    <div>New Tasks!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                            <div class="panel-footer">
+                                <span class="pull-left">View Details</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-yellow">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-shopping-cart fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">124</div>
+                                    <div>New Orders!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                            <div class="panel-footer">
+                                <span class="pull-left">View Details</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-support fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">13</div>
+                                    <div>Support Tickets!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                            <div class="panel-footer">
+                                <span class="pull-left">View Details</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+  
+          {% endblock %}
+
+          {% block summary %}
+          <h2 class="sub-header">{{ title_summary }}</h2>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>SID</th>
+                  <th>Run Type</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>User</th>
+                  <th>Created Time</th>
+                  <th>Updated Time</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for obj in objects %}
+                <tr>
+                  <td>{{ obj.sid }}</td>
+                  <td>{{ obj.test_type }}</td>
+                  <td>{{ obj.summary_desc }}</td>
+                  <td>{{ obj.test_status }}</td>
+                  <td>{{ obj.user_name }}</td>
+                  <td>{{ obj.created }}</td>
+                  <td>{{ obj.updated }}</td>
+                  {% if obj.test_status == "Scheduled" %}
+                  <td>Waiting...</td>
+                  {% else %}
+                  <td><a href="{% url 'tasks' ssid=obj.sid %}">View Details</a></td>
+                  {% endif %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+
+          </div>
+          {% endblock %}
+          {% block pagination %}
+          {{ block.super }}
+          {% endblock %}

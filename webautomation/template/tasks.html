@@ -1,0 +1,44 @@
+        {% extends 'summary.html' %}
+        {% block breadcrumb %}
+        {{ block.super }} / <a href="{% url "tasks" ssid=ssid %}">Tasks</a>
+        {% endblock %}
+        {% block dashboard %}
+        {% endblock %}
+          {% block summary %}
+          <h2 class="sub-header">{{ title_tasks }}</h2>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <!--th>TASK ID</th-->
+                  <th>TASK NAME</th>
+                  <th>TASK Description</th>
+                  <th>TASK Result</th>
+                  <th>Created Time</th>
+                  <th>Updated Time</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for obj in objects %}
+                {% if obj.test_result == "FAIL" %}
+                <tr bgcolor="red">
+                {% else %}
+                <tr>
+                {% endif %}
+                  <!--td>{{ obj.task_id }}</td-->
+                  <td>{{ obj.task_name }}</td>
+                  <td>{{ obj.task_desc }}</td>
+                  <td>{{ obj.test_result }}</td>
+                  <td>{{ obj.task_created }}</td>
+                  <td>{{ obj.task_updated }}</td>
+                  <td><a href="{% url "detail" ssid=obj.sid sssid=obj.task_id %}">View Details</a></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% endblock %}
+          {% block pagination %}
+          {{ block.super }}
+          {% endblock %}
