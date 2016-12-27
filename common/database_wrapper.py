@@ -284,7 +284,7 @@ class OperateMySQL(MySQLConnector):
 		created_list = []
 		updated_list = []
 		try:
-			query = "select sid, config_id, created, updated from reporting_summary where summary_desc like '%{0}%'".format(fixed_value)
+			query = "select sid, browser, created, updated from reporting_summary where summary_desc like '%{0}%'".format(fixed_value)
 			self.db_cursor.execute(query)
 			rs = self.db_cursor.fetchall()
 			if rs:
@@ -353,7 +353,7 @@ class NewTestRun(object):
 	def get_query(self, **kwargs):
 		query_type = "insert"
 		start_time = time.strftime(GLOBAL_TIME_FORMAT, time.localtime())
-		query = "INSERT INTO reporting_summary (test_type, config_id, test_status, proj_name, user_name, build_info, summary_desc, created, updated) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (kwargs['test_type'], kwargs['config_id'], kwargs['test_status'], kwargs['proj_name'], kwargs['user_name'], kwargs['build_info'], kwargs['summary_desc'], start_time, start_time)
+		query = "INSERT INTO reporting_summary (test_type, test_status, proj_name, user_email, browser, build_info, summary_desc, created, updated) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (kwargs['test_type'], kwargs['test_status'], kwargs['proj_name'], kwargs['user_email'], kwargs['browser'], kwargs['build_info'], kwargs['summary_desc'], start_time, start_time)
 		return query_type, query
 
 class SelectMaxId(object):

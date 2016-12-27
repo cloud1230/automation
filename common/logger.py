@@ -4,9 +4,9 @@ import datetime
 import threading
 import time
 import constants
-from utility import *
+import email_report
+import utility
 from database_wrapper import *
-from email_report import *
 
 class TestLog(logging.getLoggerClass()):
 	def __init__(self, sName=''):
@@ -136,7 +136,7 @@ class TestScenarioLog(UserDict):
 		self['task_id'] = -1
 		self['project'] = ''
 		self['test_type'] = ''
-		self['browser'] = 0
+		self['browser'] = ''
 		self['description'] = ''
 		self['user'] = ''
 		self['task'] = ''
@@ -146,14 +146,10 @@ class TestScenarioLog(UserDict):
 		self.Builds = {}
 
 		self['bused'] = False
-		self['bServer'] = False
-		self['server_container'] = ''
-		self.configs = []
+		self.browsers = []
 		self['bpassed'] = False
 		self['pass'] = -1
 		self['fail'] = -1
-		self['agent_log_path'] = ''
-		self['collector_log_path'] = ''
 
 	def initialize(self, task):
 		self['task'] = task
@@ -167,105 +163,52 @@ class TestScenarioLog(UserDict):
 		self['build_info'] = task[6]
 		self['updated'] = task[9]
 
-		lproducts = self['build_info'].split(';')
-
-		for builds in lproducts:
-			stype = builds.split(':')[0]
-			sversion = builds.split(':')[1]
-			spath = builds.split(':')[2]
-			if 'server' in stype:
-				self.Builds['server'] = [stype, sversion, spath]
-			elif 'java' in stype:
-				self.Builds['javaagent'] = [stype, sversion, spath]
-			else:
-				raise Exception("Unexpected type %s parsed from database build info field." % self.stype)
-
-		try :
-			if self.Builds['server']:
-				self['bServer'] = True
-		except:
-			print "This test scentario doesn't contain a server. Will creating for it."
-
-		if ',' in self['config_id']:
+		if ';' in self['browser']:
 			self.handle_multiple_configs()
-
 		else:
-			xml_files_folder = os.path.join(BASE_DIR, 'docker_configs', self['project'], self['test_type'], str(self['config_id']))
-	
-			xml_configs = get_config_list(xml_files_folder)
-			
-			for xml_config in xml_configs:
-				if self['bServer']:
-					if xml_config['server'] and self.Builds['server'][2] not in xml_config['files']:
-						xml_config['files'].append(self.Builds['server'][2])
-						xml_config['scripts'].append({'path':os.path.join(BASE_DIR, 'configurations/server', 'install_tps_server.py'), 'args':[]})
-						self['server_container'] = xml_config['container_name']
-						self.configs.insert(0, xml_config)
-
-				if xml_config['agent'] and self.Builds['javaagent'][2] not in xml_config['files']:
-					xml_config['files'].append(self.Builds['javaagent'][2])
-					xml_config['scripts'].append({'path':os.path.join(BASE_DIR, 'configurations/bvtdemo', 'install_agent.py'),'args':[]})
-					#xml_config['scripts'].append({'path':os.path.join(BASE_DIR, 'configurations/bvtdemo', 'install_agent.py'),'args':[]})
-					self.configs.append(xml_config)
-
-		# add server_container to agent config
-			for i in range(len(self.configs)):
-				if self.configs[i]['agent']:
-					self.configs[i]['server_container'] = self['server_container']
-
 			update_test_run_status = OperateMySQL(UpdateTestRunStatus)
-			update_test_run_status.operate_query(sid=self['sid'], status=TASK_STATUS["Run"])
+			update_test_run_status.operate_query(sid=self['sid'], status=constants.TASK_STATUS["Run"])
 			self['bused'] = True
 
 	def handle_multiple_configs(self):
 		# delete current row in db
 		# insert to current db with multiple rows with same summary_desc but different with other times
-		config_id_list = self['config_id'].split(',')
+		browsers = self['browser'].split(',')
 		current_running = ";current_running_"+time.strftime("%Y%m%d%H%M%S")
 
-		for config_id in config_id_list:
-			new_test_run = OperateMySQL(NewTestRun)
-			new_test_run.operate_query(
-				test_type = self['test_type'], 
-				config_id = config_id.strip(),
-				test_status = "Scheduled", 
-				proj_name = self['project'], 
-				user_name = self['user'], 
-				summary_desc = self['description']+current_running, 
-				build_info =  self['build_info']
-				)
+		for browser in browsers:
+			if not browser.strip() == '':
+				new_test_run = OperateMySQL(NewTestRun)
+				new_test_run.operate_query(
+					test_type = self['test_type'], 
+					browser = browser.strip(),
+					test_status = "Scheduled", 
+					proj_name = self['project'], 
+					user_email = self['user'], 
+					summary_desc = self['description']+current_running, 
+					build_info =  self['build_info']
+					)
 		OperateMySQL().delete_multiple_config_record(self['sid'])
 		self['bused'] = False
 
 	def finalize(self):
 		update_test_run_status = OperateMySQL(UpdateTestRunStatus)
-		update_test_run_status.operate_query(sid=self['sid'], status=TASK_STATUS["Fin"])
+		update_test_run_status.operate_query(sid=self['sid'], status=constants.TASK_STATUS["Fin"])
 
-		if self['project'] == 'javaagent' and self['test_type'] == 'bvt':
-			self.send_javaagent_email_report()
-		elif self['project'] == 'javaagent' and self['test_type'] == 'regression':
-			self.send_javaagent_regression_email_report()
-		elif self['project'] == 'javaagent' and self['test_type'] == 'database':
-			self.send_javaagent_regression_email_report()
+		if not self['browser']:
+			self.send_single_browser_email_report()
+		else:
+			self.send_multi_browser_email_report()
 
-	def send_javaagent_email_report(self):
+	def send_single_browser_email_report(self):
 		self['bpassed'], self['fail'], self['pass'] = OperateMySQL().get_task_test_result(self['sid'])
 		print "fail: %d, pass: %d" % (self['fail'], self['pass'])
-		for config in self.configs:
-			if config['server']:
-				server_addr = get_tps_server_url(config)
-				print "server address:", server_addr
-			elif config['agent']:
-				demo_addr = get_bvt_demo_url(config)
-				print "demo address:", demo_addr
-
-		#email_rows = []
-		#SID	ProductConfig IDTest TypePassFailTotalPassPercentStart Time
+		
 		end_time = OperateMySQL().get_bvt_task_end_time(self['sid'])
 		row_content = [
 			str(self['sid']), 
 			self['project'], 
-			self['config_id'], 
+			self['browser'], 
 			self['test_type'],
 			str(self['pass']),
 			str(self['fail']),
@@ -276,24 +219,24 @@ class TestScenarioLog(UserDict):
 			end_time
 			]
 
-		builds = "tps_server_version:%s;java_agent_version:%s" % (self.Builds['server'][1], self.Builds['javaagent'][1])
-		bvt_mail = EmailReportBuilder(builds)
-		formated_msg = bvt_mail.get_bvt_email_html_text(server_addr, demo_addr, row_content, self['bpassed'])
+		builds = "project:%s;server_version:%s" % (self['project'], self['build_info'])
+		bvt_mail = email_report.EmailReportBuilder(builds)
+		formated_msg = bvt_mail.get_bvt_email_html_text(row_content, self['bpassed'])
 
 		if self['bpassed']:
-			subject = "Succeeded: Your %s Test of %s(config: %s) has completed!" % (self['test_type'], self['project'], self['config_id'])
+			subject = "Succeeded: Your %s Test of %s(browser: %s) has completed!" % (self['test_type'], self['project'], self['browser'])
 		else:
-			subject = "Failed: Your %s Test of %s(config: %s) has completed!" % (self['test_type'], self['project'], self['config_id'])
+			subject = "Failed: Your %s Test of %s(browser: %s) has completed!" % (self['test_type'], self['project'], self['browser'])
 
 		#if self['user'] != '':
-		bvt_mail.send_report(subject, formated_msg, to=JAVA_AGENT_TO_LIST)
+		bvt_mail.send_report(subject, formated_msg, to=constants.EMAIL_TO_LIST)
 
-	def send_javaagent_regression_email_report(self):
+	def send_multi_browser_email_report(self):
 		
 		if len(self['description'].split(';')) > 1:
 			fixed_value = self['description'].split(';')[-1].strip()
 
-			sid_list, configid_list, created_list, updated_list = OperateMySQL().get_configs_using_fixed_value(fixed_value)
+			sid_list, browser_list, created_list, updated_list = OperateMySQL().get_configs_using_fixed_value(fixed_value)
 
 			rows = []
 			bpassed_list = []
@@ -316,7 +259,7 @@ class TestScenarioLog(UserDict):
 					row_content = [
 						str(item), 
 						self['project'], 
-						configid_list[index_number], 
+						browser_list[index_number], 
 						self['test_type'],
 						str(passed),
 						str(failed),
@@ -329,21 +272,21 @@ class TestScenarioLog(UserDict):
 					bpassed_list.append(bpassed)
 					rows.append(row_content)
 
-				builds = "tps_server_version:%s;java_agent_version:%s" % (self.Builds['server'][1], self.Builds['javaagent'][1])
+				builds = "server_version:%s;project:%s" % (self['build_info'], self['project'])
 				regression_mail = EmailReportBuilder(builds)
 				formated_msg = regression_mail.get_regression_email_html_text(rows, bpassed_list)
 
-				config_ids = ','.join(configid_list)
+				browsers = ','.join(browser_list)
 				if False in bpassed_list:
-					subject = "Faled: Your %s Test of %s(config(s): %s) has completed!" % (self['test_type'], self['project'], config_ids)
+					subject = "Faled: Your %s Test of %s(browser(s): %s) has completed!" % (self['test_type'], self['project'], browsers)
 				else:
-					subject = "Succeeded: Your %s Test of %s(config(s): %s) has completed!" % (self['test_type'], self['project'], config_ids)
+					subject = "Succeeded: Your %s Test of %s(browser(s): %s) has completed!" % (self['test_type'], self['project'], browsers)
 
 				#if self['user'] != '':
-				regression_mail.send_report(subject, formated_msg, to=JAVA_AGENT_TO_LIST)
-				clean_for_spaces()
+				regression_mail.send_report(subject, formated_msg, to=constants.EMAIL_TO_LIST)
+				utility.clean_for_spaces()
 		else:
-			self.send_javaagent_email_report()
+			self.send_single_browser_email_report()
 
 class TestcaseLog(UserDict):
 	def __init__(self):
