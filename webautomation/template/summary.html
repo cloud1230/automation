@@ -112,6 +112,7 @@
                   <th>Description</th>
                   <th>Status</th>
                   <th>User</th>
+                  <th>Browser</th>
                   <th>Created Time</th>
                   <th>Updated Time</th>
                   <th>Action</th>
@@ -124,7 +125,8 @@
                   <td>{{ obj.test_type }}</td>
                   <td>{{ obj.summary_desc }}</td>
                   <td>{{ obj.test_status }}</td>
-                  <td>{{ obj.user_name }}</td>
+                  <td>{{ obj.user_email }}</td>
+                  <td>{{ obj.browser }}</td>
                   <td>{{ obj.created }}</td>
                   <td>{{ obj.updated }}</td>
                   {% if obj.test_status == "Scheduled" %}
