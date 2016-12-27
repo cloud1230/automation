@@ -136,3 +136,6 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static_in_env', 'media_root')
+
+if __name__ == '__main__':
+    print os.path.join(os.path.dirname(BASE_DIR), 'common')
