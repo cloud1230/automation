@@ -1,8 +1,7 @@
 # -*- coding: UTF-8 -*-
-
 import time
 import MySQLdb
-from logger import *
+#from logger import *
 from UserDict import UserDict
 import constants
 
@@ -216,7 +215,7 @@ class OperateMySQL(MySQLConnector):
 		return result
 
 	def update_test_case_result(self, task_id, result):
-		updated_time = time.strftime(GLOBAL_TIME_FORMAT, time.localtime())
+		updated_time = time.strftime(constants.GLOBAL_TIME_FORMAT, time.localtime())
 		try:
 			query = "update reporting_tasks set test_result='%s', task_updated='%s' where task_id=%s" % (result, updated_time, task_id)
 			self.db_cursor.execute(query)
@@ -331,7 +330,7 @@ class OperateMySQL(MySQLConnector):
 
 	def initiallize_test_case(self, sid, task_name, task_desc):
 		result = 0
-		current_time = time.strftime(GLOBAL_TIME_FORMAT, time.localtime())
+		current_time = time.strftime(constants.GLOBAL_TIME_FORMAT, time.localtime())
 		try:
 			query = "insert into reporting_tasks (sid_id, task_name, task_desc, task_created, test_result, task_updated) values (%s, '%s', '%s', '%s', '%s', '%s')" % (sid, task_name, task_desc, current_time, 'unkown', current_time)
 			self.db_cursor.execute(query)
@@ -352,7 +351,7 @@ class OperateMySQL(MySQLConnector):
 class NewTestRun(object):
 	def get_query(self, **kwargs):
 		query_type = "insert"
-		start_time = time.strftime(GLOBAL_TIME_FORMAT, time.localtime())
+		start_time = time.strftime(constants.GLOBAL_TIME_FORMAT, time.localtime())
 		query = "INSERT INTO reporting_summary (test_type, test_status, proj_name, user_email, browser, build_info, summary_desc, created, updated) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (kwargs['test_type'], kwargs['test_status'], kwargs['proj_name'], kwargs['user_email'], kwargs['browser'], kwargs['build_info'], kwargs['summary_desc'], start_time, start_time)
 		return query_type, query
 
@@ -365,7 +364,7 @@ class SelectMaxId(object):
 class UpdateTestRunStatus(object):
 	def get_query(self, **kwargs):
 		query_type = "insert"
-		updated_time = time.strftime(GLOBAL_TIME_FORMAT, time.localtime())
+		updated_time = time.strftime(constants.GLOBAL_TIME_FORMAT, time.localtime())
 		query = "UPDATE reporting_summary SET test_status='%s', updated='%s' where sid=%s" %(kwargs['status'], updated_time, kwargs['sid'])
 		return query_type, query
 

@@ -5,3 +5,4 @@ lib64
 *.pyc
 logs
 password.py
+*.log

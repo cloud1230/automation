@@ -65,29 +65,6 @@ class EmailReportBuilder(UserDict):
 
 		return build_info_text % (self['project'], self['server_version'])
 
-	def get_test_case_info_html_text(self, type):
-
-		sHTML = '''
-        <span><b>Test cases:</b></span>
-        <table>         
-         <tr class=dataheader>
-          <td><p><span>Test Name</span></p></td><td><p><span>Priority</span></p></td><td><p><span>Test Objective</span></p></td>
-         </tr>
-         '''
-        if self.get_test_case_list(type) is None:
-        	sHTML += '</table></br></br>'
-        else:
-			for testcase in self.get_test_case_list(type):
-				sHTML += '''
-	                     <tr>
-	                      <td><p><span>%s</span></p></td>
-	                      <td><p><span>%s</span></p></td>
-	                      <td><p><span>%s</span></p></td>
-	                     </tr>  ''' % (testcase['name'], testcase['priority'], testcase['goal'])
-
-			sHTML += '</table></br></br>'
-		return sHTML
-
 	def get_bvt_header_row_HTML_text (self):
 		return '''
 		<b><span>Test Log:</span></b>
@@ -133,6 +110,27 @@ class EmailReportBuilder(UserDict):
 
 	def get_body_bottom_html_text(self):
 		return '''</table></body></html>'''
+
+	def get_test_case_info_html_text(self, case_type):
+		sHTML = '''
+		<span><b>Test cases:</b></span>
+		<table>
+		<tr class=dataheader><td><p><span>Test Name</span></p></td>
+		<td><p><span>Priority</span></p></td>
+		<td><p><span>Test Objective</span></p></td></tr>
+		'''
+		testcases = self.get_test_case_list(case_type)
+		if testcases:
+			for testcase in testcases:
+				sHTML += '''
+					<tr>
+					<td><p><span>%s</span></p></td>
+					<td><p><span>%s</span></p></td>
+					<td><p><span>%s</span></p></td>
+					</tr>  ''' % (testcase['name'], testcase['priority'], testcase['goal'])
+
+		sHTML += '</table></br></br>'
+		return sHTML
 
 	def get_bvt_email_html_text(self, row_content, bPASSED):
 		content = self.get_html_header()

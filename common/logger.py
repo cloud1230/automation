@@ -4,9 +4,10 @@ import datetime
 import threading
 import time
 import constants
-import email_report
 import utility
-from database_wrapper import *
+from .database_wrapper import *
+import email_report
+from UserDict import UserDict
 
 class TestLog(logging.getLoggerClass()):
 	def __init__(self, sName=''):
