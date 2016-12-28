@@ -80,5 +80,6 @@ class Operator(object):
 		return snapshot_path
 
 if __name__ == '__main__':
-	get_other_log_download_path('firefox', 'geckodriver.log')
+	op = Operator('http://www.baidu.com', 'firefox')
+	op.get_driver().title
 	#pass

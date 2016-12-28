@@ -4,9 +4,10 @@ from UserDict import UserDict
 import sys
 sys.path.append('tests')
 import testdata
-import operator 
+import operators
 sys.path.append('../..')
 from common.logger import *
+from common.exceptions import *
 
 class InstallBVTTestRun(UserDict):
 	def __init__(self, scen_logger):
@@ -44,7 +45,7 @@ class InstallBVTTestRun(UserDict):
 				raise SkipTestException("Exiting text case %s for critical issues......" % test_name)
 
 			getLog().Message("TPS server url is %s and use browser %s to browse the server." % (testdata.SERVER_URL, self.scen_logger['browser']))
-			tps_operator = operator.Operator(testdata.SERVER_URL, self.scen_logger['browser'])
+			tps_operator = operators.Operator(testdata.SERVER_URL, self.scen_logger['browser'])
 			getLog().Message("Set username: %s and password: %s then click submit button on TPS login page." % (testdata.tps_server_user, testdata.tps_server_password))
 			tps_operator.login_page.set_username_and_password(testdata.tps_server_user, testdata.tps_server_password)
 			getLog().Message("Click submit button to login.")
@@ -52,7 +53,7 @@ class InstallBVTTestRun(UserDict):
 			snapshot_path = tps_operator.take_snapshot()
 			getLog().Message("Get login snapshot: ", snapshot_path)
 
-			if testdata.LOGIN_TITLE in tps_operator.get_driver.title:
+			if testdata.LOGIN_TITLE in tps_operator.get_driver().title:
 				getLog().Pass("Successfully Login.")
 			else:
 				getLog().Fail("Failed to Login.")
