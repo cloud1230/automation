@@ -1,4 +1,11 @@
 This is the Web UI testing framework aimed for the UI automation testing with selenium for testing team. This framework will finish the base function of logging, snapshot, test cases organization, test data parsing, email and result showing.
+
+Prerequisite:
+1. Create a database with name webautomation
+2. Run command pip install -r requirements.txt 
+
+
+Steps:
 1.create db first time
 python manage.py makemigrations
 python manage.py migrate
