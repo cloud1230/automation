@@ -10,11 +10,19 @@ This is the Web UI testing framework aimed for the UI automation testing with se
 
 ### Steps to configure
 * create db first time
-** python manage.py makemigrations
-** python manage.py migrate
+<pre><code>
+ python manage.py makemigrations
+ python manage.py migrate
+</code></pre>
 * create superuser
-** python manage.py createsuperuser
+<pre><code>
+ python manage.py createsuperuser
+</code></pre>
 * start server
-** python manage.py runserver ip:port
+<pre><code>
+ python manage.py runserver ip:port
+</code></pre>
 * navigate to screenshot folder, start web service
-** python -m SimpleHTTPServer 22222 &
+<pre><code>
+ python -m SimpleHTTPServer 22222 &
+</code></pre>
