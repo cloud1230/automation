@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+import password
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -142,11 +143,22 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static_in_env', 'media_root')
 
+# django sending emai settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+  
+EMAIL_HOST = 'smtp.exmail.qq.com'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'zhangziyi@oneapm.com'
+EMAIL_HOST_PASSWORD = password.email_pass
+DEFAULT_FROM_EMAIL = 'zhangziyi@oneapm.com'
+
 # django registration redux settings
 ACCOUNT_ACTIVATION_DAYS = 7
 REGISTRATION_AUTO_LOGIN = True
 SITE_ID = 1
 LOGIN_REDIRECT_URL = '/reporting'
+LOGIN_URL = '/accounts/login/'
 
 if __name__ == '__main__':
     print os.path.join(os.path.dirname(BASE_DIR), 'common')
