@@ -30,7 +30,7 @@ class TaskExecutionEngine(threading.Thread):
 
 		self.lock.release()
 
-		if scen_logger['bused'] and task[3] == 'ai':
+		if scen_logger['bused']:
 			self.run_ai_scheduled_task(task, scen_logger)
 
 	def run_ai_scheduled_task(self, task, scen_logger):
