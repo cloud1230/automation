@@ -12,7 +12,7 @@ python manage.py migrate
 2.create superuser
 python manage.py createsuperuser
 3.start server
-python manage.py runserver <ip>:<port>
+python manage.py runserver \<ip\>:\<port\>
 4.navigate to screenshot folder, start web service
 python -m SimpleHTTPServer 22222 &
 
