@@ -15,3 +15,5 @@ def generate_temp_log():
 
 def clean_for_spaces():
 	os.system("rm -rf /tmp/*")
+
+
