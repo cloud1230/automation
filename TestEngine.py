@@ -36,7 +36,7 @@ class TaskExecutionEngine(threading.Thread):
 	def run_ai_scheduled_task(self, task, scen_logger):
 		if task[1] == 'bvt':
 			print 'Running java agent bvt related tasks...'
-			InstallBVTTestRun(scen_logger).run()
+			BVTTestRun(scen_logger).run()
 
 		elif task[1] == 'regression':
 			print 'Running java agent regresion related tasks...'

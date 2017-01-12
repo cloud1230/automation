@@ -1,27 +1,6 @@
-import time
-import os
-from UserDict import UserDict
-from functools import wraps
-import sys
-sys.path.append('tests')
-import testdata
-import operators
-from test_decorators import *
-sys.path.append('../..')
-from common.logger import *
+from BaseTestCases import *
 
-class InstallBVTTestRun(UserDict):
-	def __init__(self, scen_logger):
-		UserDict.__init__(self)
-		self.testname = ''
-		self.scen_logger = scen_logger
-		self.test_case_logger = TestcaseLog()
-		self.demo_run_times = 10
-		self.force_stop = False
-		self.debug = False
-
-	def set_debug_status(self, debug):
-		self.debug = debug
+class BVTTestRun(BaseTestRun):
 
 	def run(self):
 		try:
@@ -34,7 +13,6 @@ class InstallBVTTestRun(UserDict):
 			#error = handler_msg_before_database(str(e))
 			getLog().Error("Exception throwed from bvt test case, test ends up." + str(e))
 		finally:
-			#self.test_config_cleanup()
 			self.scen_logger.finalize()
 
 	@testcase('003_TestLogin', 'Verify we can correctly login tps server.')
