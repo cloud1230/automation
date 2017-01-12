@@ -50,7 +50,12 @@ def usage():
 	--browser firefox --build_info 4.1.1.0 --description \'This is a test run.\' --start"
 	print "-h   --help     Will show help information."
 	print "-s   --start    Will create a test run for your automation test."
-	print ""
+	print "--run_type      Need to pass run type parameter."
+	print "--project       Need to set project parameter."
+	print "--user_email    Need to set user email parameter."
+	print "--browser       Need to set browser parameter."
+	print "--build_info    Need to set build infor parameter."
+	print "--description   Need to set test description parameter."
 	sys.exit(0)
 
 def main():
