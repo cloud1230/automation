@@ -26,3 +26,6 @@ This is the Web UI testing framework aimed for the UI automation testing with se
 <pre><code>
  python -m SimpleHTTPServer 22222 &
 </code></pre>
+
+### How to write test cases？
+* 
