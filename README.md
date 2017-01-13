@@ -33,6 +33,7 @@ This is the Web UI testing framework aimed for the UI automation testing with se
 	Example: ./StartTest --run_type bvt --project AI --user_email zhangziyi@oneapm.com 	--browser firefox --build_info 4.1.1.0 --description 'This is a test run.' --start
 </code>
 
+<<<<<<< HEAD
 	** -h   --help     Will show help information.
 	** -s   --start    Will create a test run for your automation test.
     ** --run_type      Need to pass run type parameter.
@@ -41,3 +42,13 @@ This is the Web UI testing framework aimed for the UI automation testing with se
     ** --browser       Need to set browser parameter.
     ** --build_info    Need to set build infor parameter.
     ** --description   Need to set test description parameter.
+=======
+	-h   --help     Will show help information.
+	-s   --start    Will create a test run for your automation test.
+    --run_type      Need to pass run type parameter.
+    --project       Need to set project parameter.
+    --user_email    Need to set user email parameter.
+    --browser       Need to set browser parameter.
+    --build_info    Need to set build infor parameter.
+    --description   Need to set test description parameter.
+>>>>>>> f79582ad2c7c03dded4b9f3357fc7a1bba693f83
