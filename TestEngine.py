@@ -31,9 +31,9 @@ class TaskExecutionEngine(threading.Thread):
 		self.lock.release()
 
 		if scen_logger['bused']:
-			self.run_ai_scheduled_task(task, scen_logger)
+			self.run_scheduled_task(task, scen_logger)
 
-	def run_ai_scheduled_task(self, task, scen_logger):
+	def run_scheduled_task(self, task, scen_logger):
 		if task[1] == 'bvt':
 			print 'Running java agent bvt related tasks...'
 			BVTTestRun(scen_logger).run()

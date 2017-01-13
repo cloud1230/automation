@@ -2,7 +2,6 @@ import time
 import os
 from UserDict import UserDict
 from functools import wraps
-from abc import ABCMeta, abstractmethod
 import sys
 sys.path.append('tests')
 import testdata
@@ -12,8 +11,6 @@ sys.path.append('../..')
 from common.logger import *
 
 class BaseTestRun(UserDict):
-	__metaclass__ = ABCMeta
-
 	def __init__(self, scen_logger):
 		UserDict.__init__(self)
 		self.testname = ''
@@ -39,6 +36,5 @@ class BaseTestRun(UserDict):
 		finally:
 			self.scen_logger.finalize()
 			
-	@abstractmethod
 	def running_test_case_list(self):
 		pass
