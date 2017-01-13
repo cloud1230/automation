@@ -10,20 +10,36 @@ This is the Web UI testing framework aimed for the UI automation testing with se
 
 ### Steps to configure
 * create db first time
+
+```shell
 	python manage.py makemigrations
 	python manage.py migrate
+```
+	
 * create superuser
+
+```shell
 	python manage.py createsuperuser
+```
+
 * start server
+
+```shell
 	python manage.py runserver ip:port
+```
+
 * navigate to screenshot folder, start web service
 	python -m SimpleHTTPServer 22222 &
 
 ### How to start web automation testing？
+
 * Run command StartTest.py
 
+```shell
 	Example: ./StartTest --run_type bvt --project AI --user_email zhangziyi@oneapm.com 	--browser firefox --build_info 4.1.1.0 --description 'This is a test run.' --start
+```
 
+```shell
 	-h   --help     Will show help information.
 	-s   --start    Will create a test run for your automation test.
     --run_type      Need to pass run type parameter.
@@ -32,3 +48,4 @@ This is the Web UI testing framework aimed for the UI automation testing with se
     --browser       Need to set browser parameter.
     --build_info    Need to set build infor parameter.
     --description   Need to set test description parameter.
+```
