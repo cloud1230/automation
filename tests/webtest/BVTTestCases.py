@@ -2,18 +2,8 @@ from BaseTestCases import *
 
 class BVTTestRun(BaseTestRun):
 
-	def run(self):
-		try:
-			if self.scen_logger['sid'] == -1:
-				raise Exception("Initializing sid of log DB failed!")
-# all tests added here
-			self.test_login()
-
-		except Exception,e:
-			#error = handler_msg_before_database(str(e))
-			getLog().Error("Exception throwed from bvt test case, test ends up." + str(e))
-		finally:
-			self.scen_logger.finalize()
+	def running_test_case_list(self):
+		self.test_login()
 
 	@testcase('003_TestLogin', 'Verify we can correctly login tps server.')
 	def test_login(self):
